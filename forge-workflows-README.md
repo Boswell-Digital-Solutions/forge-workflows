@@ -16,7 +16,7 @@ Runs on every PR and push. Performs:
 - Optional: SvelteKit/Vite frontend build
 - Optional: Tauri bundle build (creates installers)
 
-**Supported Platforms:** Linux (ubuntu-latest), Windows (windows-latest)
+**Supported Platforms:** Linux (ubuntu-latest), Windows (windows-latest). The `runner_os` input selects the runners. The default runs both.
 
 ### `tauri-release-reusable.yml`
 Runs on version tags (`v1.0.0`, `v0.5.0-beta`, etc.). Performs:
@@ -116,6 +116,8 @@ jobs:
 
 | Input | Type | Default | Description |
 |-------|------|---------|-------------|
+| `runner_os` | string | `["ubuntu-latest","windows-latest"]` | JSON array of runner labels for the CI matrix. Pass `["ubuntu-latest"]` for Linux only. Supported labels: `ubuntu-latest`, `windows-latest` (not checked) |
+| `rust_target_windows` | string | `x86_64-pc-windows-msvc` | Rust target for the Windows runner |
 | `tauri_workdir` | string | `src-tauri` | Path to Tauri src-tauri directory |
 | `frontend_dir` | string | `.` | Path to frontend (SvelteKit) directory |
 | `build_frontend` | boolean | `false` | Whether to build frontend (required if using SvelteKit) |

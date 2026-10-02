@@ -28,7 +28,7 @@ uses: Boswecw/forge-workflows/.github/workflows/tauri-ci-reusable.yml@your-branc
 ## Architecture
 
 - `.github/workflows/tauri-ci-reusable.yml` — reusable CI: Rust `cargo fmt`/`clippy`/`cargo test --lib`,
-  optional SvelteKit/Vite frontend build, optional Tauri bundle build. Runs on Linux and Windows.
+  optional SvelteKit/Vite frontend build, optional Tauri bundle build. Runs on Linux and Windows by default. The `runner_os` input selects the runners.
 - `.github/workflows/tauri-release-reusable.yml` — reusable release: builds Tauri bundles (MSI/NSIS on
   Windows, AppImage/DEB on Linux), creates a GitHub Release, uploads artifacts. Triggered on version
   tags.

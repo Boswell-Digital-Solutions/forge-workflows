@@ -3,6 +3,15 @@ name: Tauri CI (Reusable)
 on:
   workflow_call:
     inputs:
+      # Runners
+      runner_os:
+        type: string
+        default: '["ubuntu-latest","windows-latest"]'
+        description: >-
+          JSON array of runner labels for the CI matrix. The default runs Linux and Windows.
+          Pass '["ubuntu-latest"]' to run Linux only. The supported labels are ubuntu-latest and
+          windows-latest. The workflow does not check the labels.
+
       # Rust/Build Configuration
       rust_target_windows:
         type: string
@@ -57,12 +66,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        os: [ubuntu-latest, windows-latest]
-        include:
-          - os: ubuntu-latest
-            build_target: x86_64-unknown-linux-gnu
-          - os: windows-latest
-            build_target: ${{ inputs.rust_target_windows }}
+        os: ${{ fromJSON(inputs.runner_os) }}
     
     runs-on: ${{ matrix.os }}
     
@@ -141,7 +145,9 @@ jobs:
         uses: dtolnay/rust-toolchain@master
         with:
           toolchain: ${{ inputs.rust_version }}
-          targets: ${{ matrix.build_target }}
+          # The target follows the runner. A matrix `include` entry would add a Windows job
+          # back when the caller asks for Linux only, so the target is computed here.
+          targets: ${{ matrix.os == 'windows-latest' && inputs.rust_target_windows || 'x86_64-unknown-linux-gnu' }}
 
       - name: Cache Rust build artifacts
         uses: actions/cache@v4
