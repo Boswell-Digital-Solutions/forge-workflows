@@ -122,9 +122,7 @@ jobs:
 | `frontend_build_dir` | string | `dist` | Output directory of frontend build |
 | `run_tauri_build` | boolean | `false` | Whether to build Tauri bundles (slow, only on release tags) |
 | `rust_version` | string | `stable` | Rust toolchain version (`stable`, `nightly`, `1.70.0`, etc.) |
-| `rust_targets` | string | `` | Additional Rust targets to install |
 | `continue_on_test_failure` | boolean | `false` | Continue to next job even if tests fail |
-| `linux_deps` | string | `` | Additional Linux system dependencies (space-separated) |
 
 ### `tauri-release-reusable.yml` Inputs
 
