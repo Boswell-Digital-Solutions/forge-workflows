@@ -208,11 +208,14 @@ jobs:
     needs: quick-checks
     if: always()
     steps:
+      # Fail closed. Only a `success` result passes. A caller can make this job a required check.
+      # A cancelled, skipped or failed matrix must not report "CI passed".
       - name: Check status
+        env:
+          RESULT: ${{ needs.quick-checks.result }}
         run: |
-          if [ "${{ needs.quick-checks.result }}" == "failure" ]; then
-            echo "CI failed"
+          if [ "$RESULT" != "success" ]; then
+            echo "CI did not succeed. The matrix result is: $RESULT"
             exit 1
-          else
-            echo "CI passed"
           fi
+          echo "CI passed"
