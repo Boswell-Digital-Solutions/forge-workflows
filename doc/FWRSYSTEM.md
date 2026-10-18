@@ -64,6 +64,11 @@ building, the workflow checks every final Debian archive before artifact upload.
 The release workflow applies the same check before its platform uploads.
 Windows and AppImage inspection are outside Lintian's Debian scope.
 
+The reusable CI toolchain setup explicitly installs `rustfmt` and `clippy`,
+which its mandatory formatting and strict lint steps require. A fresh pinned
+toolchain does not necessarily include those components. Missing components
+remain a failed caller run; neither check is skipped or made advisory.
+
 The check requires a tool version and at least one regular `.deb` archive.
 It clears `LINTIAN_` environment options, disables user configuration and uses
 the Debian profile. Existing package overrides remain in effect. Missing tools,

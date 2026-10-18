@@ -146,6 +146,7 @@ jobs:
         uses: dtolnay/rust-toolchain@master
         with:
           toolchain: ${{ inputs.rust_version }}
+          components: rustfmt, clippy
           # The target follows the runner. A matrix `include` entry would add a Windows job
           # back when the caller asks for Linux only, so the target is computed here.
           targets: ${{ matrix.os == 'windows-latest' && inputs.rust_target_windows || 'x86_64-unknown-linux-gnu' }}
