@@ -83,7 +83,8 @@ jobs:
             patchelf \
             pkg-config \
             build-essential \
-            libssl-dev
+            libssl-dev \
+            lintian
 
       # ========== Frontend Build ==========
       - name: Setup Node.js
@@ -161,6 +162,31 @@ jobs:
         run: cargo tauri build --verbose
 
       # ========== Upload Artifacts ==========
+      - name: Check final Debian archives with required Lintian
+        if: runner.os == 'Linux'
+        shell: bash
+        env:
+          DEB_DIR: ${{ inputs.tauri_workdir }}/target/release/bundle/deb
+        run: |
+          set -euo pipefail
+          for option in "${!LINTIAN_@}"; do unset "$option"; done
+          command -v lintian >/dev/null || { echo "Lintian is required" >&2; exit 1; }
+          lintian --version
+          shopt -s nullglob
+          packages=("$DEB_DIR/"*.deb)
+          (( ${#packages[@]} > 0 )) || { echo "No Debian archive found: $DEB_DIR" >&2; exit 1; }
+          for package in "${packages[@]}"; do
+            [[ -f "$package" && ! -L "$package" ]] || exit 1
+            before=$(sha256sum -- "$package")
+            echo "$before"
+            status=0
+            lintian --no-user-dirs --no-cfg --profile debian --tag-display-limit 0 \
+              --fail-on error --color never "$package" || status=$?
+            after=$(sha256sum -- "$package")
+            [[ "$before" == "$after" ]] || { echo "Archive changed during inspection" >&2; exit 1; }
+            (( status == 0 )) || exit "$status"
+          done
+
       - name: Upload Windows artifacts
         if: runner.os == 'Windows'
         uses: actions/upload-artifact@v4

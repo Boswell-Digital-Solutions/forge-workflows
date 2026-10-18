@@ -1,0 +1,16 @@
+name: Debian check regressions
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/**"
+      - "scripts/test_lintian_workflows.py"
+      - "doc/**"
+permissions:
+  contents: read
+jobs:
+  regressions:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - run: python3 -m unittest discover -s scripts -p test_lintian_workflows.py -v
+      - run: bash doc/system/BUILD.sh && git diff --exit-code -- doc/FWRSYSTEM.md

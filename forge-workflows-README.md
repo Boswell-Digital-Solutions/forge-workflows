@@ -297,3 +297,11 @@ See `CONTRIBUTING.md` for detailed guidelines.
 
 **Last Updated:** December 12, 2025  
 **Maintainer:** BDS Team
+
+
+### Debian package inspection
+
+Linux bundle jobs require Lintian and check final `.deb` archives before upload.
+Errors and tool failures block the job. Warnings stay in the job log. See
+`doc/system/01-architecture.md` for the storage path, limits and caller test gate.
+This change does not retag a release or update a calling repository's pinned ref.
