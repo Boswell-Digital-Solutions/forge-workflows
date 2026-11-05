@@ -2,6 +2,10 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Repo Identity
+
+- Default branch: master
+
 ## Project Overview
 
 forge-workflows provides reusable GitHub Actions workflows for the BDS Tauri ecosystem — the single
