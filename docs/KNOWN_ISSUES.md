@@ -1,5 +1,24 @@
 # Known Issues
 
+## 2026-11-15 — Three of four `doc/system` chapters are bootstrap placeholders, and no chapter describes the test step
+
+**Status: open.** Source: BDS-ORG-ARCH-AUDIT-2026-11. Evidence class: Observed (doc tree), at `forge-workflows@225bcdcf84`.
+
+`doc/system/00-overview.md`, `10-class-assignment-required.md` and `90-appendices.md` hold only the
+generated placeholder text ("registry-generated bootstrap scaffold for a `unknown` class documentation
+system", lines 7-8 of each). Only `01-architecture.md` has authored content. It covers the Lintian check
+and the build of the documentation. It does not describe the `cargo test` step, the input
+`continue_on_test_failure`, or the fact that only unit tests run. A reader of the documents cannot learn
+what a green `CI Status` proves. The workflows are the source of truth for this.
+
+**Root cause:** not determined. The placeholders came from the registry bootstrap and nobody replaced
+them.
+
+**Fix:** none applied. Recommendation from the audit: replace the three placeholders, and add the scope of
+the test step and of `CI Status` to `01-architecture.md`.
+
+**Scope:** Open.
+
 ## 2026-11-09 — `continue_on_test_failure` can turn a failed unit test into a green `CI Status`
 
 **Status: open.** Recorded by forge BDS-FGITR-v0.1 (governance truth audit). Verified on `master` `7174e2fe`.
@@ -15,6 +34,14 @@ No caller sets the input to `true` today: forge-smithy (pin `d815c296`) omits it
 
 **Fix:** none applied. Options: remove the input, or make `CI Status` fail when the test step outcome is
 `failure`, the pattern forge-smithy's `analysis-suite.yml` uses with its "Enforce Gates" step.
+
+**Re-confirmed 2026-11-15 (BDS-ORG-ARCH-AUDIT-2026-11, Observed, source).** At `forge-workflows@225bcdcf84`
+the input is declared at `.github/workflows/tauri-ci-reusable.yml:48-51` (default `false`), and the step
+`cargo test --lib` has `continue-on-error: ${{ inputs.continue_on_test_failure }}` at lines 173-176. No later
+step reads a step outcome. The pinned callers are unchanged (cortex_bds `cc189163` sets `false`; forge-smithy
+`d815c296` omits the input), so no caller sets `true` and the risk stays latent. **New:** the step passes
+`--lib`, so it runs unit tests only. Integration tests in `tests/` never run in this workflow, whatever the
+input is. A green `CI Status` therefore does not show that integration tests pass.
 
 ## 2026-11-09 — A green `CI Status` does not prove a frontend build or a Tauri bundle
 
